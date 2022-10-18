@@ -32,7 +32,7 @@ def load_bi_data(ratio):
         yw_y = []
         with open(yunwen[div], 'rb') as inpt:
             yw_data = pickle.load(inpt)
-            print('total ' + div + ':' + len(yw_data))
+            print('total ', div, ':' , len(yw_data))
             for i in yw_data:
                 yw_x.append(i['context'])
                 yw_y.append('yunwen')
@@ -79,6 +79,106 @@ def load_cls_data(ratio):
 
     X_train, _, y_train, _ = train_test_split(X_train, y_train, test_size=ratio, random_state=42)
     return X_train, X_test, y_train, y_test
+
+
+def trans(cls):
+    if cls == 'sanwen':
+        return '文'
+    if cls == 'shi':
+        return '诗'
+    if cls == 'ci':
+        return '词'
+    if cls == 'shijing':
+        return '经'
+    if cls == 'chuci':
+        return '辞'
+    if cls == 'yuanqu':
+        return '曲'
+
+
+def load_prompted_data_1():
+    '''
+    一则[mask]如下 :
+    '''
+    train_x, valid_x, train_y, valid_y = load_cls_data(0.95)
+
+    for i in range(0, len(train_x)):
+        cls = trans(train_y[i])
+        prompt = ['一','则','[MASK]','如','下',':']
+        train_x[i] = prompt + train_x[i]
+        train_y[i] = cls
+
+    for i in range(0, len(valid_x)):
+        cls = trans(valid_y[i])
+        prompt = ['一','则','[MASK]','如','下',':']
+        valid_x[i] = prompt + valid_x[i]
+        valid_y[i] = cls
+
+    return train_x, valid_x, train_y, valid_y
+
+
+def load_prompted_data_2():
+    '''
+    下文是一段[mask] :
+    '''
+    train_x, valid_x, train_y, valid_y = load_cls_data(0.95)
+
+    for i in range(0, len(train_x)):
+        cls = trans(train_y[i])
+        prompt = ['下', '文', '是', '一', '段', '[MASK]', ':']
+        train_x[i] = prompt + train_x[i]
+        train_y[i] = cls
+
+    for i in range(0, len(valid_x)):
+        cls = trans(valid_y[i])
+        prompt = ['下', '文', '是', '一', '段', '[MASK]', ':']
+        valid_x[i] = prompt + valid_x[i]
+        valid_y[i] = cls
+
+    return train_x, valid_x, train_y, valid_y
+
+
+def load_prompted_data_3():
+    '''
+    [mask] :
+    '''
+    train_x, valid_x, train_y, valid_y = load_cls_data(0.95)
+
+    for i in range(0, len(train_x)):
+        cls = trans(train_y[i])
+        prompt = ['[MASK]', ':']
+        train_x[i] = prompt + train_x[i]
+        train_y[i] = cls
+
+    for i in range(0, len(valid_x)):
+        cls = trans(valid_y[i])
+        prompt = ['[MASK]', ':']
+        valid_x[i] = prompt + valid_x[i]
+        valid_y[i] = cls
+
+    return train_x, valid_x, train_y, valid_y
+
+
+def load_prompted_data_4():
+    '''
+    有 [mask] 云：
+    '''
+    train_x, valid_x, train_y, valid_y = load_cls_data(0.95)
+
+    for i in range(0, len(train_x)):
+        cls = trans(train_y[i])
+        prompt = ['有', '[MASK]', '云', ':']
+        train_x[i] = prompt + train_x[i]
+        train_y[i] = cls
+
+    for i in range(0, len(valid_x)):
+        cls = trans(valid_y[i])
+        prompt = ['有', '[MASK]', '云', ':']
+        valid_x[i] = prompt + valid_x[i]
+        valid_y[i] = cls
+
+    return train_x, valid_x, train_y, valid_y
+
 
 
 if __name__ == '__main__':
